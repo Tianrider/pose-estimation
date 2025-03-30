@@ -3,8 +3,8 @@ import VideoCanvas from "./components/video";
 
 const VALID_EXERCISE_TYPES = ["squat", "jumping-jack"];
 
-export default function Page({params}: {params: {type: string}}) {
-	const exerciseType = params.type;
+export default async function Page({params}: {params: {type: string}}) {
+	const {type: exerciseType} = await params;
 
 	if (!VALID_EXERCISE_TYPES.includes(exerciseType)) {
 		redirect("/exercise");

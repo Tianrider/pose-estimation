@@ -2,7 +2,7 @@ import {drawKeypoints, drawSkeleton} from "./useHelper";
 import * as posenet from "@tensorflow-models/posenet";
 import {multiPoseDetection} from "./usePosenet";
 
-export const videoWidth = 500;
+export const videoWidth = 700;
 export const videoHeight = 500;
 
 export const average = (array: number[]) => {
