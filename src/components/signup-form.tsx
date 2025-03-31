@@ -70,7 +70,6 @@ export function SignupForm({className, ...props}: React.ComponentProps<"div">) {
 
 			if (result?.success) {
 				toast.success(result.success);
-				// Refresh user context after successful signup
 				await refreshUser();
 				router.push("/auth/login");
 			}

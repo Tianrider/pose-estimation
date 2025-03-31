@@ -24,7 +24,7 @@ export async function signUp(formData: FormData) {
 	}
 
 	return {
-		success: "Account created successfully! Please log in to continue.",
+		success: "Account created successfully!.",
 	};
 }
 

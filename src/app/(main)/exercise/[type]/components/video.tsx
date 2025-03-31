@@ -19,6 +19,7 @@ import {
 	Award,
 	CheckCircle,
 	Save,
+	Home,
 } from "lucide-react";
 import {
 	Dialog,
@@ -28,6 +29,9 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {logWorkoutAndAddPoints} from "@/app/actions/workout";
+import {toast} from "sonner";
+import {useRouter} from "next/navigation";
 
 export default function VideoCanvas({type}: {type: string}) {
 	const [webcamEnabled, setWebcamEnabled] = useState(false);
@@ -37,6 +41,10 @@ export default function VideoCanvas({type}: {type: string}) {
 	const [startTime, setStartTime] = useState<Date | null>(null);
 	const [elapsedTime, setElapsedTime] = useState("00:00");
 	const [showRecap, setShowRecap] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [showSuccess, setShowSuccess] = useState(false);
+	const [earnedPoints, setEarnedPoints] = useState<number>(0);
+	const router = useRouter();
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -183,18 +191,38 @@ export default function VideoCanvas({type}: {type: string}) {
 				videoRef.current.pause();
 			}
 		}
-		// Show the recap dialog
 		setShowRecap(true);
 	};
 
-	const handleSaveTraining = () => {
-		// Save logic will be implemented later
-		console.log("Saving training session:", {
-			exercise: type,
-			reps: Math.floor(score / 2),
-			duration: elapsedTime,
-		});
-		setShowRecap(false);
+	const handleSaveTraining = async () => {
+		setIsSaving(true);
+
+		try {
+			const response = await logWorkoutAndAddPoints(
+				type,
+				Math.floor(score / 2),
+				elapsedTime
+			);
+
+			if (response.success) {
+				console.log("Training session saved successfully:", response);
+				toast.success("Training session saved successfully!");
+				setEarnedPoints(Math.floor(score / 2));
+				setShowRecap(false);
+				setShowSuccess(true);
+			} else {
+				console.error("Error saving training session:", response.error);
+				toast.error(`Error saving training session: ${response.error}`);
+			}
+		} catch (error) {
+			toast.error(`An error occurred while saving the session: ${error}`);
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	const handleGoToDashboard = () => {
+		router.push("/");
 	};
 
 	return (
@@ -439,9 +467,60 @@ export default function VideoCanvas({type}: {type: string}) {
 						>
 							Close
 						</Button>
-						<Button onClick={handleSaveTraining} className="gap-1">
-							<Save className="h-4 w-4" />
-							Save Session
+						<Button
+							onClick={handleSaveTraining}
+							className="gap-2"
+							disabled={isSaving}
+						>
+							{isSaving ? (
+								<>
+									<div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent"></div>
+									Saving...
+								</>
+							) : (
+								<>
+									<Save className="h-4 w-4" />
+									Save Session
+								</>
+							)}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Success Dialog */}
+			<Dialog open={showSuccess} onOpenChange={setShowSuccess}>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2 text-green-600">
+							<CheckCircle className="h-6 w-6" />
+							Workout Saved Successfully!
+						</DialogTitle>
+						<DialogDescription>
+							Your {type.replace("-", " ")} session has been
+							recorded.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-6 py-4">
+						<div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+							<p className="text-green-800 mb-2">You earned</p>
+							<p className="text-3xl font-bold text-green-600 flex items-center justify-center">
+								<Award className="h-6 w-6 mr-2 text-yellow-500" />
+								{earnedPoints} points
+							</p>
+						</div>
+						<p className="text-center text-gray-600">
+							Keep up the good work! Regular exercise helps you
+							stay healthy and earn more points.
+						</p>
+					</div>
+					<DialogFooter className="flex justify-center">
+						<Button
+							onClick={handleGoToDashboard}
+							className="gap-2 w-full"
+						>
+							<Home className="h-4 w-4" />
+							Go to Home
 						</Button>
 					</DialogFooter>
 				</DialogContent>

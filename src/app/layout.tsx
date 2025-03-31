@@ -1,8 +1,7 @@
 import type {Metadata} from "next";
+import "./globals.css";
 import {UserProvider} from "@/contexts/user-context";
 import {Toaster} from "sonner";
-import "./globals.css";
-import SidebarComponent from "@/components/sidebar";
 
 export const metadata: Metadata = {
 	title: "Pose Estimation",
@@ -13,11 +12,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 		<html lang="en">
 			<body>
 				<UserProvider>
-					<SidebarComponent>
-						<div className="bg-white w-full h-full overflow-auto">
-							{children}
-						</div>
-					</SidebarComponent>
+					{children}
 					<Toaster />
 				</UserProvider>
 			</body>
