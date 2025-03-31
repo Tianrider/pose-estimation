@@ -210,6 +210,17 @@ export default function VideoCanvas({type}: {type: string}) {
 				setEarnedPoints(Math.floor(score / 2));
 				setShowRecap(false);
 				setShowSuccess(true);
+
+				// Turn off webcam when workout is saved successfully
+				if (webcamEnabled) {
+					if (videoRef.current && videoRef.current.srcObject) {
+						const stream = videoRef.current
+							.srcObject as MediaStream;
+						stream.getTracks().forEach((track) => track.stop());
+						videoRef.current.srcObject = null;
+					}
+					setWebcamEnabled(false);
+				}
 			} else {
 				console.error("Error saving training session:", response.error);
 				toast.error(`Error saving training session: ${response.error}`);
@@ -488,9 +499,24 @@ export default function VideoCanvas({type}: {type: string}) {
 				</DialogContent>
 			</Dialog>
 
-			{/* Success Dialog */}
-			<Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-				<DialogContent className="sm:max-w-md">
+			{/* Success Dialog - Make it non-dismissible */}
+			<Dialog
+				open={showSuccess}
+				onOpenChange={(open) => {
+					// Prevent closing the dialog by clicking outside or escape key
+					if (!open) {
+						// Do nothing, keeps the dialog open
+						// Or redirect to home directly
+						router.push("/");
+					}
+				}}
+				modal={true}
+			>
+				<DialogContent
+					className="sm:max-w-md"
+					onEscapeKeyDown={(e) => e.preventDefault()}
+					onPointerDownOutside={(e) => e.preventDefault()}
+				>
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2 text-green-600">
 							<CheckCircle className="h-6 w-6" />
