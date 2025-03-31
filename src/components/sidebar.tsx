@@ -3,8 +3,6 @@
 import {Sidebar, SidebarBody, SidebarLink} from "@/components/ui/sidebar";
 import {
 	LayoutDashboard,
-	UserCog,
-	Settings,
 	LogOut,
 	User,
 	Dumbbell,
@@ -52,23 +50,23 @@ export default function SidebarComponent({
 			),
 		},
 
-		{
-			label: "Profile",
-			href: "/profile",
-			icon: (
-				<UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-			),
-		},
-		{
-			label: "Settings",
-			href: "/settings",
-			icon: (
-				<Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-			),
-		},
+		// {
+		// 	label: "Profile",
+		// 	href: "/profile",
+		// 	icon: (
+		// 		<UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+		// 	),
+		// },
+		// {
+		// 	label: "Settings",
+		// 	href: "/settings",
+		// 	icon: (
+		// 		<Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+		// 	),
+		// },
 		{
 			label: "Logout",
-			href: "/logout",
+			href: "/auth/callback/logout",
 			icon: (
 				<LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
 			),
