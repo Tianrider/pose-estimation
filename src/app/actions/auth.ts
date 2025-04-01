@@ -59,7 +59,7 @@ export async function getCurrentUser() {
 	if (error || !data.user) {
 		return {error: error?.message || "User not found", user: null};
 	}
-
+	console.log("User data:", data);
 	return {
 		user: {
 			id: data.user.id,

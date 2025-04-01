@@ -1,7 +1,7 @@
 "use client";
 
-import {cn} from "@/lib/utils";
-import {Button} from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -9,28 +9,31 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {useState} from "react";
-import {signIn} from "@/app/actions/auth";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { signIn } from "@/app/actions/auth";
 import Link from "next/link";
-import {toast} from "sonner";
+import { toast } from "sonner";
 
 export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
 	const [isLoading, setIsLoading] = useState(false);
 
-	async function handleSubmit(formData: FormData) {
-		setIsLoading(true);
+	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault(); // Prevent default form submission
+
+		const formData = new FormData(event.currentTarget); // Extract form data
 
 		try {
+			setIsLoading(true);
 			const result = await signIn(formData);
+			console.log(result);
 			if (result?.error) {
 				toast.error(result.error);
-				setIsLoading(false);
 			}
-			return;
 		} catch (e) {
 			console.error(e);
+		} finally {
 			setIsLoading(false);
 		}
 	}
@@ -45,7 +48,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form action={handleSubmit}>
+					<form onSubmit={handleSubmit}>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-3">
 								<Label htmlFor="email">Email</Label>

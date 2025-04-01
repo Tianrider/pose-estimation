@@ -13,7 +13,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 			<body>
 				<UserProvider>
 					{children}
-					<Toaster />
+					<Toaster richColors />
 				</UserProvider>
 			</body>
 		</html>
