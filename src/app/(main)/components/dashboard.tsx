@@ -10,7 +10,7 @@ function Dashboard() {
 	return (
 		<div className="flex flex-col p-4 gap-4 lg:p-8">
 			<span>
-				{currenUser.user?.username ? (
+				{!currenUser.loading ? (
 					<h4 className="text-lg">
 						Welcome back, {currenUser.user?.username}
 					</h4>
